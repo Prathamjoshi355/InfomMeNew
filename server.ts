@@ -1,7 +1,10 @@
+import dotenv from 'dotenv';
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
+
+dotenv.config();
 
 async function startServer() {
   const app = express();
@@ -16,13 +19,17 @@ async function startServer() {
 
   async function getMongoDb() {
     const mongoUri = process.env.MONGODB_URI;
-    if (!mongoUri) return null;
+    if (!mongoUri) {
+      console.error('MONGODB_URI is missing from environment');
+      return null;
+    }
     
     if (cachedClient && cachedDb) {
       return cachedDb;
     }
     
     try {
+      console.log('MONGODB_URI loaded, connecting to MongoDB...');
       // Import dynamically so it doesn't fail at startup if mongodb is not installed
       const { MongoClient } = await import('mongodb');
       const client = new MongoClient(mongoUri);
@@ -30,6 +37,7 @@ async function startServer() {
       cachedClient = client;
       const dbName = new URL(mongoUri).pathname.replace('/', '') || 'InformxMe';
       cachedDb = client.db(dbName);
+      console.log(`Connected to MongoDB database: ${dbName}`);
       return cachedDb;
     } catch (err) {
       console.error('Failed to connect to MongoDB, falling back to local file storage:', err);
