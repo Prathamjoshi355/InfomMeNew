@@ -23,8 +23,11 @@ export async function getDb(): Promise<Db | null> {
     cachedDb = client.db(dbName)
     console.log(`Connected to MongoDB database: ${dbName}`)
     return cachedDb
-  } catch (err) {
+  } catch (err: any) {
     console.error('MongoDB connection error:', err)
+    if (err.stack) {
+      console.error(err.stack)
+    }
     return null
   }
 }
