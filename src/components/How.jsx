@@ -70,7 +70,7 @@ export default function FooterSection() {
           {/* Why Choose */}
           <div className="p-8 lg:p-10 border-b lg:border-b-0 lg:border-r border-white/10">
             <h2 className="text-2xl font-bold mb-8">
-              Why Choose InformxMe?
+              Why Choose Vander?
             </h2>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -82,8 +82,8 @@ export default function FooterSection() {
                     key={index}
                     className="text-center"
                   >
-                    <div className="w-70     h-70 rounded-full  flex items-center justify-center mx-auto mb-5">
-                      <Icon className="w-9 h-9 text-white" />
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <Icon className="w-6 h-6 text-white" />
                     </div>
 
                     <p className="text-sm font-medium">
@@ -114,12 +114,12 @@ export default function FooterSection() {
                     key={index}
                     className="text-center relative"
                   >
-                    <div className="text-white-400 font-bold text-sm mb-2">
+                    <div className="text-yellow-400 font-bold text-sm mb-2">
                       {step.number}
                     </div>
 
-                    <div className="w-14 h-14  rounded-full border border-white/20 flex items-center justify-center mx-auto mb-3">
-                      <Icon className="w-6 h-6 text-white   " />
+                    <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center mx-auto mb-3">
+                      <Icon className="w-6 h-6 text-[#071B3B]" />
                     </div>
 
                     <p className="text-xs text-white/90 leading-relaxed">
@@ -199,13 +199,13 @@ export default function FooterSection() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3 text-gray-700">
                   <Phone className="w-5 h-5" />
-                  <span>+91 91314 94302</span>
+                  <span>+91 90000 00000</span>
                 </div>
 
-                {/* <div className="flex items-center gap-3 text-gray-700">
+                <div className="flex items-center gap-3 text-gray-700">
                   <Mail className="w-5 h-5" />
-                  <span>info@InformxMe.com</span>
-                </div> */}  
+                  <span>info@vander.com</span>
+                </div>
               </div>
             </div>
 
@@ -215,11 +215,10 @@ export default function FooterSection() {
         {/* Copyright */}
         <div className="bg-[#071B3B] py-4">
           <p className="text-center text-white/70 text-sm">
-            © 2026 InformxMe. All Rights Reserved.
+            © 2026 Vander. All Rights Reserved.
           </p>
         </div>
       </footer>
     </>
   );
 }
-
