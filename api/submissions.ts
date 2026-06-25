@@ -1,9 +1,8 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { getDb } from './db'
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'InformxMeAdmin123'
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: any, res: any) {
   console.log('api/submissions invoked', req.method)
   console.log('process.env.NODE_ENV', process.env.NODE_ENV)
 
