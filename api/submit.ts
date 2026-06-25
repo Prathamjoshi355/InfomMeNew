@@ -14,17 +14,26 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
     return
   }
 
-  const dbFile = path.join(process.cwd(), 'submissions.json')
+  const persistentRoot = process.env.VERCEL ? '/tmp' : process.cwd()
+  const dbFile = path.join(persistentRoot, 'submissions.json')
   let all: any[] = []
+
   try {
     if (fs.existsSync(dbFile)) {
       all = JSON.parse(fs.readFileSync(dbFile, 'utf8') || '[]')
     }
-  } catch (e) {
+  } catch (err: any) {
+    console.error('submit read error', err)
     all = []
   }
 
-  all.push(payload)
-  fs.writeFileSync(dbFile, JSON.stringify(all, null, 2))
-  res.status(201).json({ ok: true, fallback: true })
+  try {
+    all.push(payload)
+    fs.writeFileSync(dbFile, JSON.stringify(all, null, 2))
+    res.status(201).json({ ok: true, fallback: true })
+  } catch (err: any) {
+    console.error('submit write error', err)
+    res.status(500).json({ error: 'Server error', details: err.message })
+  }
 }
+
