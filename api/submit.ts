@@ -1,8 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import fs from 'fs'
-import path from 'path'
+import { getDb } from './db'
 
-export default function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method Not Allowed' })
     return
@@ -14,26 +13,19 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
     return
   }
 
-  const persistentRoot = process.env.VERCEL ? '/tmp' : process.cwd()
-  const dbFile = path.join(persistentRoot, 'submissions.json')
-  let all: any[] = []
-
-  try {
-    if (fs.existsSync(dbFile)) {
-      all = JSON.parse(fs.readFileSync(dbFile, 'utf8') || '[]')
-    }
-  } catch (err: any) {
-    console.error('submit read error', err)
-    all = []
+  const db = await getDb()
+  if (!db) {
+    res.status(500).json({ error: 'Database connection failed' })
+    return
   }
 
   try {
-    all.push(payload)
-    fs.writeFileSync(dbFile, JSON.stringify(all, null, 2))
-    res.status(201).json({ ok: true, fallback: true })
+    const coll = db.collection('submissions')
+    await coll.insertOne(payload)
+    res.status(201).json({ ok: true })
   } catch (err: any) {
-    console.error('submit write error', err)
-    res.status(500).json({ error: 'Server error', details: err.message })
+    console.error('submit insert error', err)
+    res.status(500).json({ error: 'Insert failed', details: err.message })
   }
 }
 

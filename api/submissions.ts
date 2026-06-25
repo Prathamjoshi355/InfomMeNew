@@ -1,10 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import fs from 'fs'
-import path from 'path'
+import { getDb } from './db'
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'InformxMeAdmin123'
 
-export default function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') {
     res.status(405).json({ error: 'Method Not Allowed' })
     return
@@ -16,17 +15,18 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
     return
   }
 
-  const persistentRoot = process.env.VERCEL ? '/tmp' : process.cwd()
-  const dbFile = path.join(persistentRoot, 'submissions.json')
-  let all: any[] = []
-  try {
-    if (fs.existsSync(dbFile)) {
-      all = JSON.parse(fs.readFileSync(dbFile, 'utf8') || '[]')
-    }
-  } catch (err: any) {
-    console.error('submissions read error', err)
-    all = []
+  const db = await getDb()
+  if (!db) {
+    res.status(500).json({ error: 'Database connection failed' })
+    return
   }
 
-  res.status(200).json(all)
+  try {
+    const coll = db.collection('submissions')
+    const rows = await coll.find().toArray()
+    res.status(200).json(rows)
+  } catch (err: any) {
+    console.error('submissions read error', err)
+    res.status(500).json({ error: 'Read failed', details: err.message })
+  }
 }
