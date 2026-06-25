@@ -8,6 +8,7 @@ async function startServer() {
   const PORT = 3000;
 
   app.use(express.json());
+  app.options('/api/*', (req, res) => res.sendStatus(200));
 
   // Lazy-loaded MongoDB helper
   let cachedClient: any = null;
